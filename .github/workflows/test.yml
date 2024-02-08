@@ -7,16 +7,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        go: ['1.17', '1.18', '1.19', '1.20', '1.21']
+        go: ['1.17', '1.18', '1.19', '1.20', '1.21', '1.22']
 
     runs-on: ubuntu-latest
 
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: setup-go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
         with:
           go-version: ${{matrix.go}}
 
@@ -24,14 +24,14 @@ jobs:
         run: go build
 
   test-openbsd:
-    runs-on: macos-12
+    runs-on: ubuntu-22.04
 
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: openbsd-vm
-        uses: vmactions/openbsd-vm@v0
+        uses: vmactions/openbsd-vm@v1
         with:
           prepare: |
             for i in $(jot 10); do
