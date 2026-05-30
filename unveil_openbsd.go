@@ -15,7 +15,9 @@
 package openbsd
 
 import (
+	"errors"
 	"fmt"
+	"io/fs"
 
 	"golang.org/x/sys/unix"
 )
@@ -30,6 +32,62 @@ func Unveil(path, permissions string) error {
 func UnveilBlock() error {
 	if err := unix.UnveilBlock(); err != nil {
 		return fmt.Errorf("unveil: %w", err)
+	}
+	return nil
+}
+
+func UnveilMime() error {
+	paths := []string{
+		"/etc/apache/mime.types",
+		"/etc/apache2/mime.types",
+		"/etc/httpd/conf/mime.types",
+		"/etc/mime.types",
+		"/usr/local/share/mime/globs2",
+		"/usr/share/mime/globs2",
+		"/usr/share/misc/mime.types",
+	}
+	return unveilPaths(paths)
+}
+
+func UnveilNet() error {
+	paths := []string{
+		"/etc/hosts",
+		"/etc/protocols",
+		"/etc/resolv.conf",
+		"/etc/services",
+	}
+	return unveilPaths(paths)
+}
+
+func UnveilTime() error {
+	paths := []string{
+		"/etc/localtime",
+		"/usr/share/zoneinfo",
+	}
+	return unveilPaths(paths)
+}
+
+func UnveilUser() error {
+	paths := []string{
+		"/etc/group",
+		"/etc/passwd",
+	}
+	return unveilPaths(paths)
+}
+
+func UnveilX509() error {
+	paths := []string{
+		"/etc/ssl/cert.pem",
+	}
+	return unveilPaths(paths)
+}
+
+func unveilPaths(paths []string) error {
+	for i := range paths {
+		err := Unveil(paths[i], "r")
+		if err != nil && !errors.Is(err, fs.ErrNotExist) {
+			return err
+		}
 	}
 	return nil
 }

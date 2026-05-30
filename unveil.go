@@ -23,3 +23,23 @@ func Unveil(path, permissions string) error {
 func UnveilBlock() error {
 	return nil
 }
+
+func UnveilMime() error {
+	return nil
+}
+
+func UnveilNet() error {
+	return nil
+}
+
+func UnveilTime() error {
+	return nil
+}
+
+func UnveilUser() error {
+	return nil
+}
+
+func UnveilX509() error {
+	return nil
+}
